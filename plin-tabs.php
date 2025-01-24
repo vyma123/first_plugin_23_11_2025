@@ -3,7 +3,7 @@
  * Plugin Name:       Plin tab
  * Plugin URI:        https://villatheme.com
  * Description:       Hello tab
- * Version:           1.10.3
+ * Version:           1.1.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Vy Ma Van
@@ -28,43 +28,60 @@ You should have received a copy of the GNU General Public License
 along with Plin tab. If not, see {URI to Plugin License}.
 */
 
-if(!defined('PLUGINPREFIX_DIR_PATH')){
-    define('PLUGINPREFIX_DIR_PATH', plugin_dir_path(__FILE__));
+
+
+if ( ! defined( 'WPINC' ) ) {
+	die;
 }
 
-if(!defined('PLUGINPREFIX_DIR_URL')){
-    define('PLUGINPREFIX_DIR_URL', plugin_dir_url(__FILE__));
+define( 'PLIN_TABS_VERSION', '1.0.0' );
+
+
+
+
+/**
+ * The code that runs during plugin activation.
+ * This action is documented in includes/class-plugin-name-activator.php
+ */
+function activate_plin_tabs() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-plin-tabs-activator.php';
+	Plugin_Name_Activator::activate();
 }
 
-if(!defined('PLUGINPREFIX_URL')){
-    define('PLUGINPREFIX_URL', plugins_url('', __FILE__));
+/**
+ * The code that runs during plugin deactivation.
+ * This action is documented in includes/class-plugin-name-deactivator.php
+ */
+function deactivate_plin_tabs() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-plin-tabs-deactivator.php';
+	Plugin_Name_Deactivator::deactivate();
 }
 
+register_activation_hook( __FILE__, 'activate_plin_tabs' );
+register_deactivation_hook( __FILE__, 'deactivate_plin_tabs' );
 
-if ( is_admin() ) {
-    // we are in admin mode
+/**
+ * The core plugin class that is used to define internationalization,
+ * admin-specific hooks, and public-facing site hooks.
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/class-plin-tabs.php';
 
-    include PLUGINPREFIX_DIR_PATH . 'admin/admin-core.php';
+/**
+ * Begins execution of the plugin.
+ *
+ * Since everything within the plugin is registered via hooks,
+ * then kicking off the plugin from this point in the file does
+ * not affect the page life cycle.
+ *
+ * @since    1.0.0
+ */
+function run_plugin_name() {
 
-}else{
-    //front end
+	$plugin = new Plugin_Name();
+	$plugin->run();
+
 }
+run_plugin_name();
 
-
-//  add_action('admin_notices', 'my_function');
-
-//  function my_function() {
-    
-//  }
-
-add_filter( 'woocommerce_product_tabs', 'woo_rename_tabs', 98 );
-function woo_rename_tabs( $tabs ) {
-
-	// $tabs['description']['title'] = __( 'More Information' );		
-	// $tabs['reviews']['title'] = __( 'Ratings' );				
-  	$tabs['additional_information']['title'] = __( 'Product Data', 'plin-tabs' );	
-
-	return $tabs;
-}
 ?>
 
