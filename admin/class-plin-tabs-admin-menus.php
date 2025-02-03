@@ -54,14 +54,14 @@ function my_plugin_page() {
             // Display a success message
 
              // Lưu các tab tùy chỉnh
-        if (isset($_POST['custom_tabs'])) {
-            $new_tabs = array_map(function ($tab) {
+             if (isset($_POST['custom_tabs']) && is_array($_POST['custom_tabs'])) {
+                $new_tabs = array_map(function ($tab) {
                 return [
                     'title' => sanitize_text_field($tab['title']),
                     'priority' => intval($tab['priority']),
                     'content' => wp_kses_post($tab['content']),
                 ];
-            }, sanitize_text_field(wp_unslash($_POST['custom_tabs'])));
+            }, wp_unslash($_POST['custom_tabs']));
 
             update_option('custom_product_tabs', $new_tabs);
         } else {
@@ -95,7 +95,7 @@ function my_plugin_page() {
                         <input type="text" name="description_n" value="<?php echo esc_attr($description_n); ?>" />
                     </td>
                     <td>
-                        <input type="number" name="description_priority" value="<?php echo esc_attr($description_priority); ?>" />
+                        <input type="number" name="description_priority" value="<?php echo esc_attr($description_priority); ?>" min='0'/>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -114,7 +114,7 @@ function my_plugin_page() {
                 <?php foreach ($custom_tabs as $index => $tab) : ?>
                     <div class="custom-tab">
                         <input type="text" name="custom_tabs[<?php echo esc_attr($index); ?>][title]" value="<?php echo esc_attr($tab['title']); ?>" placeholder="Tab Name" required />
-                        <input type="number" name="custom_tabs[<?php echo esc_attr($index); ?>][priority]" value="<?php echo esc_attr($tab['priority']); ?>" placeholder="Priority" required />
+                        <input min='0' type="number" name="custom_tabs[<?php echo esc_attr($index); ?>][priority]" value="<?php echo esc_attr($tab['priority']); ?>" placeholder="Priority" required/>
                         <textarea name="custom_tabs[<?php echo esc_attr($index); ?>][content]" placeholder="Tab Content"><?php echo esc_textarea($tab['content']); ?></textarea>
                         <button type="button" class="remove-tab">Remove</button>
                     </div>
@@ -124,7 +124,7 @@ function my_plugin_page() {
             <button type="button" id="add-new-tab">Add New Tab</button>
 
             <p class="submit">
-                <input type="submit" name="submit" class="button-primary" value="<?php  echo esc_attr($submitt);?>"  min='0'/>
+                <input type="submit" name="submit" class="button-primary" value="<?php  echo esc_attr($submitt);?>" />
             </p>
         </form>
     </div>
@@ -133,9 +133,10 @@ function my_plugin_page() {
         document.getElementById('add-new-tab').addEventListener('click', function() {
             var container = document.getElementById('custom-tabs-container');
             var index = container.children.length;
+            
             var html = `<div class="custom-tab">
                             <input type="text" name="custom_tabs[${index}][title]" placeholder="Tab Name" required />
-                            <input type="number" name="custom_tabs[${index}][priority]" placeholder="Priority" required />
+                            <input type="number" min='0' name="custom_tabs[${index}][priority]" placeholder="Priority" required />
                             <textarea name="custom_tabs[${index}][content]" placeholder="Tab Content"></textarea>
                             <button type="button" class="remove-tab">Remove</button>
                         </div>`;
@@ -147,6 +148,8 @@ function my_plugin_page() {
                 event.target.parentElement.remove();
             }
         });
+
+       
     </script>
     <?php
 }
