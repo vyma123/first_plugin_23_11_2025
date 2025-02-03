@@ -61,7 +61,7 @@ function my_plugin_page() {
                     'priority' => intval($tab['priority']),
                     'content' => wp_kses_post($tab['content']),
                 ];
-            }, $_POST['custom_tabs']);
+            }, sanitize_text_field(wp_unslash($_POST['custom_tabs'])));
 
             update_option('custom_product_tabs', $new_tabs);
         } else {
@@ -109,14 +109,13 @@ function my_plugin_page() {
                 </tr>
             </table>
 
-            
             <h2>Custom Tabs</h2>
             <div id="custom-tabs-container">
                 <?php foreach ($custom_tabs as $index => $tab) : ?>
                     <div class="custom-tab">
-                        <input type="text" name="custom_tabs[<?php echo $index; ?>][title]" value="<?php echo esc_attr($tab['title']); ?>" placeholder="Tab Name" required />
-                        <input type="number" name="custom_tabs[<?php echo $index; ?>][priority]" value="<?php echo esc_attr($tab['priority']); ?>" placeholder="Priority" required />
-                        <textarea name="custom_tabs[<?php echo $index; ?>][content]" placeholder="Tab Content"><?php echo esc_textarea($tab['content']); ?></textarea>
+                        <input type="text" name="custom_tabs[<?php echo esc_attr($index); ?>][title]" value="<?php echo esc_attr($tab['title']); ?>" placeholder="Tab Name" required />
+                        <input type="number" name="custom_tabs[<?php echo esc_attr($index); ?>][priority]" value="<?php echo esc_attr($tab['priority']); ?>" placeholder="Priority" required />
+                        <textarea name="custom_tabs[<?php echo esc_attr($index); ?>][content]" placeholder="Tab Content"><?php echo esc_textarea($tab['content']); ?></textarea>
                         <button type="button" class="remove-tab">Remove</button>
                     </div>
                 <?php endforeach; ?>
