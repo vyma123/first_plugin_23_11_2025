@@ -21,6 +21,7 @@ function my_plugin_page() {
     $message = 'Tab priorities have been updated.';
     $submitt = 'Save Changes';
     $title_tabs = 'WooCommerce Product Tabs';
+    $custom_tabs = get_option('custom_product_tabs', []);
 
     ?>
     <div class="wrap">
@@ -52,7 +53,23 @@ function my_plugin_page() {
             
             // Display a success message
 
-            echo '<div class="updated"><p>'.esc_html($message).'</p></div>';
+             // Lưu các tab tùy chỉnh
+        if (isset($_POST['custom_tabs'])) {
+            $new_tabs = array_map(function ($tab) {
+                return [
+                    'title' => sanitize_text_field($tab['title']),
+                    'priority' => intval($tab['priority']),
+                    'content' => wp_kses_post($tab['content']),
+                ];
+            }, $_POST['custom_tabs']);
+
+            update_option('custom_product_tabs', $new_tabs);
+        } else {
+            update_option('custom_product_tabs', []);
+        }
+
+        echo '<div class="updated"><p>' . esc_html($message) . '</p></div>';
+
         }
 
         // Get saved tab priorities or set defaults
@@ -92,16 +109,48 @@ function my_plugin_page() {
                 </tr>
             </table>
 
+            
+            <h2>Custom Tabs</h2>
+            <div id="custom-tabs-container">
+                <?php foreach ($custom_tabs as $index => $tab) : ?>
+                    <div class="custom-tab">
+                        <input type="text" name="custom_tabs[<?php echo $index; ?>][title]" value="<?php echo esc_attr($tab['title']); ?>" placeholder="Tab Name" required />
+                        <input type="number" name="custom_tabs[<?php echo $index; ?>][priority]" value="<?php echo esc_attr($tab['priority']); ?>" placeholder="Priority" required />
+                        <textarea name="custom_tabs[<?php echo $index; ?>][content]" placeholder="Tab Content"><?php echo esc_textarea($tab['content']); ?></textarea>
+                        <button type="button" class="remove-tab">Remove</button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <button type="button" id="add-new-tab">Add New Tab</button>
+
             <p class="submit">
                 <input type="submit" name="submit" class="button-primary" value="<?php  echo esc_attr($submitt);?>"  min='0'/>
             </p>
         </form>
     </div>
 
-   
+    <script>
+        document.getElementById('add-new-tab').addEventListener('click', function() {
+            var container = document.getElementById('custom-tabs-container');
+            var index = container.children.length;
+            var html = `<div class="custom-tab">
+                            <input type="text" name="custom_tabs[${index}][title]" placeholder="Tab Name" required />
+                            <input type="number" name="custom_tabs[${index}][priority]" placeholder="Priority" required />
+                            <textarea name="custom_tabs[${index}][content]" placeholder="Tab Content"></textarea>
+                            <button type="button" class="remove-tab">Remove</button>
+                        </div>`;
+            container.insertAdjacentHTML('beforeend', html);
+        });
+
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('remove-tab')) {
+                event.target.parentElement.remove();
+            }
+        });
+    </script>
     <?php
 }
-
 
 // Reorder product tabs based on the saved priorities
 add_filter('woocommerce_product_tabs', 'woo_reorder_tabs', 98);
@@ -140,7 +189,26 @@ function woo_rename_tabs( $tabs ) {
 
 	return $tabs;
 }
+
+
+add_filter('woocommerce_product_tabs', 'woo_add_custom_tabs', 98);
+function woo_add_custom_tabs($tabs) {
+    $custom_tabs = get_option('custom_product_tabs', []);
+
+    foreach ($custom_tabs as $index => $tab) {
+        $tabs['custom_tab_' . $index] = [
+            'title'    => esc_html($tab['title']),
+            'priority' => intval($tab['priority']),
+            'callback' => function() use ($tab) {
+                echo '<p>' . wp_kses_post($tab['content']) . '</p>';
+            },
+        ];
+    }
+
+    return $tabs;
+}
 ?>
+
 
 
 
