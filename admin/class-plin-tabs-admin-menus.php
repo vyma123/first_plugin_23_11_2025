@@ -30,10 +30,19 @@ function my_plugin_page() {
         // Check if the form is submitted
 
         if (isset($_POST['submit']) && check_admin_referer('my_plugin_action', 'my_plugin_nonce')) {
-            $description_priority = intval($_POST['description_priority']);
-            $description_n = sanitize_text_field($_POST['description_n']);
-            $reviews_n = sanitize_text_field($_POST['reviews_n']);
-            $reviews_priority = intval($_POST['reviews_priority']);
+            if(isset($_POST['description_priority'])){
+                $description_priority = intval($_POST['description_priority']);
+            }
+            if(isset($_POST['description_n'])){
+                $description_n = sanitize_text_field(wp_unslash($_POST['description_n']));
+            }
+            if(isset($_POST['reviews_n'])){
+                $reviews_n = sanitize_text_field(wp_unslash($_POST['reviews_n']));
+            }
+            if(isset($_POST['reviews_priority'])){
+                $reviews_priority = intval($_POST['reviews_priority']);
+            }
+            
             
             // Update the priorities for product tabs
             update_option('description_priority', $description_priority);
@@ -78,18 +87,21 @@ function my_plugin_page() {
                         <input type="text" name="reviews_n" value="<?php echo esc_attr($reviews_n); ?>" />
                     </td>
                     <td>
-                        <input type="number" name="reviews_priority" value="<?php echo esc_attr($reviews_priority); ?>"  />
+                        <input type="number" name="reviews_priority" value="<?php echo esc_attr($reviews_priority); ?>" min='0' />
                     </td>
                 </tr>
             </table>
 
             <p class="submit">
-                <input type="submit" name="submit" class="button-primary" value="<?php  echo esc_attr($submitt);?>" />
+                <input type="submit" name="submit" class="button-primary" value="<?php  echo esc_attr($submitt);?>"  min='0'/>
             </p>
         </form>
     </div>
+
+   
     <?php
 }
+
 
 // Reorder product tabs based on the saved priorities
 add_filter('woocommerce_product_tabs', 'woo_reorder_tabs', 98);
@@ -122,10 +134,19 @@ function woo_rename_tabs( $tabs ) {
     if (isset($tabs['description'])) {
         $tabs['description']['title'] = $description_n;		// Rename the description tab
     }
-    if (isset($tabs['reviews_n'])) {
-        $tabs['reviews_n']['title'] = $reviews_n;		// Rename the description tab
+    if (isset($tabs['reviews'])) {
+        $tabs['reviews']['title'] = $reviews_n;		// Rename the description tab
     }
 
 	return $tabs;
 }
 ?>
+
+
+
+
+
+
+
+
+
