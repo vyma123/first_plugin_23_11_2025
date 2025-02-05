@@ -20,13 +20,12 @@ function my_plugin_page() {
     // Check if the nonce is valid
     if (isset($_POST['my_plugin_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['my_plugin_nonce'])), 'my_plugin_save_tabs')) {
         // Handle saving new tabs
-
+        
         if (isset($_POST['new_tab_names']) && is_array($_POST['new_tab_names'])) {
             $sanitized_tabs = array_map('sanitize_text_field', wp_unslash($_POST['new_tab_names']));
             update_option('woo_plin_tabs', $sanitized_tabs);
         }
         
-        // Save the new titles for Description and Reviews
         if (isset($_POST['description_title'])) {
             update_option('woo_description_title', sanitize_text_field(wp_unslash($_POST['description_title'])));
         }
@@ -40,15 +39,14 @@ function my_plugin_page() {
 
     // Get saved tabs
     $saved_tabs = get_option('woo_plin_tabs', []);
-    $description_title = get_option('woo_description_title', 'Description'); // Default title
-    $reviews_title = get_option('woo_reviews_title', 'Reviews'); // Default title
+    $description_title = get_option('woo_description_title', 'Description'); 
+    $reviews_title = get_option('woo_reviews_title', 'Reviews'); 
     ?>
     <form method="POST">
         <?php
         // Add a nonce field to the form for security
         wp_nonce_field('my_plugin_save_tabs', 'my_plugin_nonce');
         ?>
-        <!-- Input fields for Description and Reviews Titles -->
         <div>
             <label for="description_title">Description Tab Title:</label>
             <input type="text" name="description_title" value="<?php echo esc_attr($description_title); ?>">
@@ -123,4 +121,5 @@ function woo_rename_tabs($tabs) {
 
     return $tabs;
 }
+
 ?>

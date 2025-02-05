@@ -1,12 +1,11 @@
 jQuery(document).ready(function($) {
-    $("#addBtn").click(function() {
-        console.log('cd');
+    $("#addBtn").click(function(e) {
+        e.preventDefault(); 
 
-        const addBtn = document.getElementById("inputFields");
-        addBtn.innerHTML += `
-        <div>
-        <input type="text" name="new_tab_names[]">
-        </div>
-        `;
+        $("#inputFields").append(`
+            <div>
+                <input type="text" name="new_tab_names[]" placeholder="Enter tab name">
+            </div>
+        `);
     });
 });
