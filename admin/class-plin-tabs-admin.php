@@ -74,6 +74,7 @@ class Plugin_Name_Admin {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/plin-tabs-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( 'semantic-ui', 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css', array(), '2.5.0', 'all' );
 
 	}
 
