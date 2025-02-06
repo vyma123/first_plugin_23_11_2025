@@ -49,15 +49,14 @@ function my_plugin_page() {
                 foreach ($new_tab_names as $index => $tab) {
                     if (!empty(trim($tab))) {
                         $filtered_tabs[$index] = $tab;
-
+                
                         if (empty($new_tab_priorities[$index])) {
                             $max_priority++;
                             $new_tab_priorities[$index] = $max_priority;
                         }
-
-                        update_option("woo_plin_tab_priority_{$index}", absint($new_tab_priorities[$index]));
                     }
                 }
+                update_option('woo_plin_tabs_priorities', $new_tab_priorities);
 
                 update_option('woo_plin_tabs', array_values($filtered_tabs));
                 update_option('woo_plin_tabs_priorities', $new_tab_priorities);
@@ -124,7 +123,9 @@ function my_plugin_page() {
             <?php
             if ($saved_tabs) {
                 foreach ($saved_tabs as $index => $tab) {
-                    $tab_priority = get_option("woo_plin_tab_priority_{$index}", 10);
+                    $all_priorities = get_option('woo_plin_tabs_priorities', []);
+                    $tab_priority = isset($all_priorities[$index]) ? $all_priorities[$index] : 10;
+
                     echo "
                          <div class='ui form'>
                          <div class='fields'>

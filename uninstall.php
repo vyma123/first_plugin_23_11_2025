@@ -30,9 +30,10 @@ $options = ['woo_plin_tabs', 'woo_plin_tabs_priorities'];
 foreach ($options as $option){
 	delete_option($option);
 }
-
  
 delete_option( $option_name );
+
+
 
 // If uninstall not called from WordPress, then exit.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
