@@ -157,7 +157,8 @@ function add_custom_product_tabs($tabs) {
  
     if ($saved_tabs) {
         foreach ($saved_tabs as $index => $tab_name) {
-            $tab_priority = get_option("woo_plin_tab_priority_{$index}", 10); 
+            $all_priorities = get_option('woo_plin_tabs_priorities', []);
+            $tab_priority = isset($all_priorities[$index]) ? $all_priorities[$index] : 10;
             $tabs["custom_tab_{$index}"] = array(
                 'title'    => esc_html($tab_name), 
                 'priority' => absint($tab_priority),
