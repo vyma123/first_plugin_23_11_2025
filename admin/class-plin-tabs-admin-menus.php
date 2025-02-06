@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 add_action('admin_menu', 'my_plugin_create_menu');
 
 function my_plugin_create_menu() {
@@ -29,10 +32,10 @@ function my_plugin_page() {
             $description_priority = get_option('woo_description_priority', 1); 
             $reviews_priority = get_option('woo_reviews_priority', 2); 
             $new_tab_names = isset($_POST['new_tab_names']) ? array_map('sanitize_text_field', wp_unslash($_POST['new_tab_names'])) : [];
-            $new_tab_names_des = isset($_POST['description_title']) ?  wp_unslash($_POST['description_title']) : [];
-            $new_tab_names_rev = isset($_POST['reviews_title']) ?  wp_unslash($_POST['reviews_title']) : [];
-            $new_tab_priorities_des = isset($_POST['description_priority']) ?  wp_unslash($_POST['description_priority']) : [];
-            $new_tab_priorities_rev = isset($_POST['reviews_priority']) ?  wp_unslash($_POST['reviews_priority']) : [];
+            $new_tab_names_des = isset($_POST['description_title']) ?  sanitize_text_field(wp_unslash($_POST['description_title'])) : [];
+            $new_tab_names_rev = isset($_POST['reviews_title']) ?  sanitize_text_field(wp_unslash($_POST['reviews_title'])) : [];
+            $new_tab_priorities_des = isset($_POST['description_priority']) ?  sanitize_text_field(wp_unslash($_POST['description_priority'])) : [];
+            $new_tab_priorities_rev = isset($_POST['reviews_priority']) ?  sanitize_text_field(wp_unslash($_POST['reviews_priority'])) : [];
          
             $new_tab_priorities = isset($_POST['new_tab_priorities']) ? array_map('sanitize_text_field', wp_unslash($_POST['new_tab_priorities'])) : [];
 
@@ -58,6 +61,7 @@ function my_plugin_page() {
 
                 update_option('woo_plin_tabs', array_values($filtered_tabs));
                 update_option('woo_plin_tabs_priorities', $new_tab_priorities);
+
                 $saveSuccess = '<div class="updated"><p><strong>Tabs saved successfully.</strong></p></div>';
             }
 
@@ -86,10 +90,10 @@ function my_plugin_page() {
         <button id="addBtn" class="ui primary basic button">Add New Tab</button>
 
         <?php if(!empty($saveSuccess)){
-            echo $saveSuccess;
+            echo wp_kses_post($saveSuccess);
         } 
         if(!empty($formNotAllowed)){
-            echo $formNotAllowed;
+            echo wp_kses_post($formNotAllowed);
         } 
         ?>
 

@@ -28,11 +28,8 @@ You should have received a copy of the GNU General Public License
 along with Plin tab. If not, see {URI to Plugin License}.
 */
 
+if ( ! defined( 'ABSPATH' ) ) exit;
 
-
-if ( ! defined( 'WPINC' ) ) {
-	die;
-}
 
 define( 'PLIN_TABS_VERSION', '1.0.0' );
 
