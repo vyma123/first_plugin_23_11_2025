@@ -1,6 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
 add_action('admin_menu', 'my_plugin_create_menu');
 
@@ -40,7 +40,7 @@ function my_plugin_page() {
             $new_tab_priorities = isset($_POST['new_tab_priorities']) ? array_map('sanitize_text_field', wp_unslash($_POST['new_tab_priorities'])) : [];
 
             if ($existing_tabs == $new_tab_names && $existing_priorities == $new_tab_priorities && $existing_tabs_des == $new_tab_names_des && $existing_tabs_rev == $new_tab_names_rev && $existing_priorities_des == $new_tab_priorities_des && $existing_priorities_rev == $new_tab_priorities_rev) {
-                $saveSuccess = '<div class="updated"><p><strong>No changes detected.</strong></p></div>';
+                $saveSuccess = '<div id="no_change_detected" class="notice notice-warning"><p><strong>No changes detected.</strong></p></div>';
             } else {
                 $filtered_tabs = [];
                 $all_priorities = array_merge($existing_priorities, [$description_priority, $reviews_priority]);
@@ -61,7 +61,7 @@ function my_plugin_page() {
                 update_option('woo_plin_tabs', array_values($filtered_tabs));
                 update_option('woo_plin_tabs_priorities', $new_tab_priorities);
 
-                $saveSuccess = '<div class="updated"><p><strong>Tabs saved successfully.</strong></p></div>';
+                $saveSuccess = '<div id="tab_save_success" class="updated"><p><strong>Tabs saved successfully.</strong></p></div>';
             }
 
             if ((get_option('woo_description_title') !== $_POST['description_title']) || (get_option('woo_description_priority') !== $_POST['description_priority'])) {
@@ -87,6 +87,7 @@ function my_plugin_page() {
         <?php wp_nonce_field('my_plugin_save_tabs', 'my_plugin_nonce'); ?>
         <h1 class='heading-plin-tabs'>Plin Tabs</h1>
         <button id="addBtn" class="ui primary basic button">Add New Tab</button>
+        <div id='added_new_tab' class='notice notice-info d-none'></div>
 
         <?php if(!empty($saveSuccess)){
             echo wp_kses_post($saveSuccess);

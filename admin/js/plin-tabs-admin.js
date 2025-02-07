@@ -1,6 +1,9 @@
 jQuery(document).ready(function ($) {
+    let tabCount = 0;
     $('#addBtn').click(function (e) {
         e.preventDefault();
+        tabCount++;
+    $('#add_new_tab').removeClass('d-none');
         $('#inputFields').append(`
             <div class="ui form input-group">
                 <div class="fields">
@@ -16,6 +19,11 @@ jQuery(document).ready(function ($) {
                 </div>
             </div>
         `);
+        $('#added_new_tab').removeClass('d-none');
+        $('#no_change_detected').addClass('d-none');
+        $('#tab_save_success').addClass('d-none');
+        $('#added_new_tab').html(`<p><strong>Added ${tabCount} new tab${tabCount > 1 ? 's' : ''}</strong></p>`);
+
     });
 
     $('form').submit(function (e) {
@@ -23,6 +31,8 @@ jQuery(document).ready(function ($) {
         $('.required-field').each(function () {
             if ($.trim($(this).val()) === '') {
                 $(this).siblings('.required').removeClass('d-none');
+                $('#added_new_tab').addClass('d-none');
+
                 isValid = false;
             } else {
                 $(this).siblings('.required').addClass('d-none');
