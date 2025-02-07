@@ -41,7 +41,9 @@ function my_plugin_page() {
 
             if ($existing_tabs == $new_tab_names && $existing_priorities == $new_tab_priorities && $existing_tabs_des == $new_tab_names_des && $existing_tabs_rev == $new_tab_names_rev && $existing_priorities_des == $new_tab_priorities_des && $existing_priorities_rev == $new_tab_priorities_rev) {
                 $saveSuccess = '<div id="no_change_detected" class="notice notice-warning"><p><strong>No changes detected.</strong></p></div>';
+
             } else {
+                
                 $filtered_tabs = [];
                 $all_priorities = array_merge($existing_priorities, [$description_priority, $reviews_priority]);
                 $max_priority =  max($all_priorities);

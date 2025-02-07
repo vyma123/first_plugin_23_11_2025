@@ -23,19 +23,20 @@ jQuery(document).ready(function ($) {
         $('#no_change_detected').addClass('d-none');
         $('#tab_save_success').addClass('d-none');
         $('#added_new_tab').html(`<p><strong>Added ${tabCount} new tab${tabCount > 1 ? 's' : ''}</strong></p>`);
-
     });
+
 
     $('form').submit(function (e) {
         let isValid = true;
         $('.required-field').each(function () {
+
             if ($.trim($(this).val()) === '') {
                 $(this).siblings('.required').removeClass('d-none');
                 $('#added_new_tab').addClass('d-none');
-
                 isValid = false;
             } else {
                 $(this).siblings('.required').addClass('d-none');
+                
             }
         });
 
